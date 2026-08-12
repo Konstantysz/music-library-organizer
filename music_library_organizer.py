@@ -1,6 +1,5 @@
 import argparse
 import logging
-import os
 import re
 from pathlib import Path
 
@@ -194,11 +193,9 @@ def process_library(library_dir, dry_run=False):
             track_str = format_track_prefix(tag)
 
             correct_track_filename = album_dir / f"{track_str} {title}.flac"
-            if str(song_file_path) != str(correct_track_filename):
-                logger.info(
-                    f"Renaming file: {song_file_path.name} -> {correct_track_filename.name}"
-                )
-                safe_rename(song_file_path, correct_track_filename, dry_run=dry_run)
+            if str(file_path) != str(correct_track_filename):
+                logger.info(f"Renaming file: {file_path.name} -> {correct_track_filename.name}")
+                safe_rename(file_path, correct_track_filename, dry_run=dry_run)
 
 
 def main():

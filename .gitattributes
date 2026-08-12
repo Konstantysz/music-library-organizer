@@ -1,0 +1,47 @@
+# Auto‑detect text files and normalise LF on commit
+* text=auto
+
+# Preserve Windows‑specific scripts
+*.bat text eol=crlf
+*.cmd text eol=crlf
+*.ps1 text eol=crlf
+
+# Unix‑style scripts
+*.sh  text eol=lf
+*.bash text eol=lf
+*.fish text eol=lf
+*.ksh  text eol=lf
+*.zsh  text eol=lf
+
+# Serialization / config files (always text)
+*.json text
+*.toml text
+*.yaml text
+*.yml  text
+*.xml  text
+*.csv  text eol=crlf   # optional, keep if you need CRLF in CSVs
+
+# Markdown / documentation (text, markdown diff)
+*.md  text diff=markdown
+*.mdx text diff=markdown
+*.txt text
+
+# Python source files – use Python diff driver
+*.py  text diff=python
+*.pyx text diff=python
+*.pyi text diff=python
+*.py3 text diff=python
+*.pyw text diff=python
+
+# Exclude from git‑archive
+.gitattributes export-ignore
+.gitignore     export-ignore
+.gitkeep       export-ignore
+
+# Binary files you never commit (byte‑code, compiled extensions)
+*.pyc binary export-ignore
+*.pyo binary export-ignore
+*.pyd binary export-ignore
+*.p   binary
+*.pkl binary
+*.pickle binary
