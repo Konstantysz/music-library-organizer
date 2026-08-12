@@ -1,0 +1,29 @@
+[project]
+name = "music-library-organizer"
+version = "0.1.0"
+description = ""
+requires-python = ">=3.12"
+dependencies = [
+    "tinytag>=2.3.0",
+]
+
+[project.scripts]
+music-library-organizer = "music_library_organizer:main"
+
+[dependency-groups]
+dev = [
+    "pytest>=8.0.0",
+    "ruff>=0.6.0",
+]
+
+[tool.ruff.lint]
+select = ["E", "W", "F"]
+
+[tool.ruff]
+line-length = 100
+
+[tool.ruff.format]
+quote-style = "double"
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
