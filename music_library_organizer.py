@@ -3,6 +3,7 @@ import logging
 import os
 import re
 from pathlib import Path
+
 from tinytag import TinyTag
 
 
@@ -132,10 +133,10 @@ def safe_rename(src: Path, dst: Path, dry_run: bool = False) -> bool:
     try:
         if is_case_only:
             temp_path = src.with_name(f"{src.name}_tmp_rename")
-            os.rename(src, temp_path)
-            os.rename(temp_path, dst)
+            src.rename(temp_path)
+            temp_path.rename(dst)
         else:
-            os.rename(src, dst)
+            src.rename(dst)
         return True
     except OSError as e:
         logger.error(f"Error renaming {src} to {dst}: {e}")
@@ -144,16 +145,17 @@ def safe_rename(src: Path, dst: Path, dry_run: bool = False) -> bool:
 
 def process_library(library_dir, dry_run=False):
     # let it blow up if the root dir doesn't exist, user should know better
-    albums = sorted(os.listdir(library_dir))
+    albums = sorted(library_dir.iterdir())
 
-    for album in albums:
-        album_dir = library_dir / album
+    for album_path in albums:
+        # album_path is a Path object representing the album directory
+        album_dir = album_path
         if not album_dir.is_dir():
             continue
 
-        entries = sorted(os.listdir(album_dir))
+        entries = sorted(album_dir.iterdir())
 
-        flac_files = [album_dir / f for f in entries if f.lower().endswith(".flac")]
+        flac_files = [f for f in entries if f.is_file() and f.suffix.lower() == ".flac"]
         if not flac_files:
             continue
 
@@ -176,17 +178,16 @@ def process_library(library_dir, dry_run=False):
             if safe_rename(album_dir, correct_album_directory, dry_run=dry_run) and not dry_run:
                 album_dir = correct_album_directory
 
-        current_files = sorted(os.listdir(album_dir))
+        current_files = sorted(album_dir.iterdir())
 
-        for file_name in current_files:
-            song_file_path = album_dir / file_name
-            if not song_file_path.is_file() or song_file_path.suffix.lower() != ".flac":
+        for file_path in current_files:
+            if not file_path.is_file() or file_path.suffix.lower() != ".flac":
                 continue
 
             try:
-                tag = TinyTag.get(song_file_path)
+                tag = TinyTag.get(file_path)
             except Exception as e:
-                logger.error(f"Reading tags from {song_file_path}: {e}")
+                logger.error(f"Reading tags from {file_path}: {e}")
                 continue
 
             title = sanitize_path_component(tag.title, fallback="Unknown Title")

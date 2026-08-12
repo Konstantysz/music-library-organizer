@@ -1,10 +1,11 @@
 from types import SimpleNamespace
+
 from music_library_organizer import (
     extract_year,
     format_artists,
     format_track_prefix,
-    sanitize_path_component,
     safe_rename,
+    sanitize_path_component,
 )
 
 

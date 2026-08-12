@@ -12,18 +12,34 @@ music-library-organizer = "music_library_organizer:main"
 
 [dependency-groups]
 dev = [
+    "pre-commit>=3.5.0",
     "pytest>=8.0.0",
     "ruff>=0.6.0",
 ]
 
-[tool.ruff.lint]
-select = ["E", "W", "F"]
-
 [tool.ruff]
 line-length = 100
+target-version = "py312"
 
 [tool.ruff.format]
 quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
+
+[tool.ruff.lint]
+select = [
+    "E", "F",    # pyflakes / pycodestyle errors
+    "I",         # isort
+    "N",         # pep8-naming
+    "UP",        # pyupgrade
+    "B",         # flake8-bugbear
+    "SIM",       # flake8-simplify
+    "C4",        # flake8-comprehensions
+    "PTH",       # flake8-use-pathlib
+    "DOC",       # pydocstyle
+]
+ignore = ["D100"]   # maybe you don't require docstrings on every public module
 
 [tool.pytest.ini_options]
 pythonpath = ["."]
