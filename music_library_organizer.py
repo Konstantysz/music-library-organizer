@@ -73,23 +73,30 @@ def sanitize_path_component(val, fallback="Unknown"):
     s = str(val).strip()
     if not s or s.lower() == "none":
         return fallback
-
-    # replace illegal characters with underscore
-    s = re.sub(r"[<>\"*?|/\\]", "_", s)
+    # Replace colon with separator
     s = s.replace(":", " -")
-    # collapse consecutive underscores
-    s = re.sub(r"_+", "_", s)
-    # remove trailing underscores introduced by illegal char replacement
-    s = s.rstrip("_")
 
+    # Remove question marks
+    s = s.replace("?", "")
+
+    # Replace illegal characters
+    s = s.replace("/", "_")
+    s = s.replace("\\", "_")
+    s = s.replace("|", "_")
+    s = s.replace("*", "")
+    s = s.replace("\u003c", "")
+    s = s.replace("\u003e", "")
+
+    # Preserve spaces as they appear; just strip leading/trailing whitespace
     s = s.strip()
+
+    # Remove trailing underscores and dots
+    s = s.rstrip("_")
     while s.endswith("."):
         s = s[:-1].strip()
-
-    # handle windows reserved names
+    # Handle Windows reserved device names
     if re.match(r"^(CON|PRN|AUX|NUL|COM\d|LPT\d)$", s, re.IGNORECASE):
         s = f"_{s}"
-
     return s if s else fallback
 
 
