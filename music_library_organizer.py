@@ -74,9 +74,13 @@ def sanitize_path_component(val, fallback="Unknown"):
     if not s or s.lower() == "none":
         return fallback
 
-    # basic cleanup
-    s = re.sub(r'[<>"*?|/\\]', "_", s)
+    # replace illegal characters with underscore
+    s = re.sub(r"[<>\"*?|/\\]", "_", s)
     s = s.replace(":", " -")
+    # collapse consecutive underscores
+    s = re.sub(r"_+", "_", s)
+    # remove trailing underscores introduced by illegal char replacement
+    s = s.rstrip("_")
 
     s = s.strip()
     while s.endswith("."):
